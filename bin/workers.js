@@ -6,7 +6,7 @@ var debug = require('debug')('node_web_cluster:worker');
 app.set('port', process.env.PORT);
 
 var connections = [];
-function onhandle(self, handle) {
+function onhandle(self, handle, data) {
   if (self.maxConnections && self.connections >= self.maxConnections) {
     handle.destroy();
     return;
@@ -34,7 +34,7 @@ server = http.createServer(app);
 
 process.on("message", function(m, handle) {
   if ( m.type =='socket' && handle ) {
-    onhandle(server, handle);
+    onhandle(server, handle, m.buffer);
   }
   if( m.type == 'exit' ){
     server.close(function() {

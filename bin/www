@@ -3,7 +3,8 @@
 /**
  * Module dependencies.
  */
-
+process.env.NODE_DEBUG  = '*';
+process.env.NODE_DEBUG  = 'node_web_cluster';
 var debug = require('debug')('node_web_cluster:server');
 var net = require('net');
 var _ = require('underscore');
@@ -27,15 +28,16 @@ function gain_worker() {
 }
 
 var worker = gain_worker();
-
 /**
- * Create HTTP server.
+ * Create net server.
  */
 
 var server = net.createServer(function( c ) {
-  worker.send({ 
-    type   : 'socket'
-  },c);
+  // c.emit("connect");
+
+  worker.send({
+    type : 'socket'
+  },c)
 });
 
 var restart_worker = _.debounce(function restart_worker () {
